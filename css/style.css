@@ -1,0 +1,1202 @@
+/* ==========================================================================
+   RoletaZapp - Folha de Estilos Moderna com Design Glassmorphism e Azul Royal
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Tema Padrão: Azul Royal */
+    --theme-name: 'royal-blue';
+    --bg-base: #060b19;
+    --bg-surface: #0c1631;
+    --bg-card: rgba(15, 28, 63, 0.72);
+    --bg-glass: rgba(23, 42, 94, 0.45);
+    --border-glass: rgba(96, 165, 250, 0.22);
+    --border-active: rgba(96, 165, 250, 0.6);
+    
+    --royal-900: #0f1e4a;
+    --royal-700: #1d4ed8;
+    --royal-600: #2563eb;
+    --royal-500: #3b82f6;
+    --royal-400: #60a5fa;
+    --royal-glow: rgba(37, 99, 235, 0.45);
+
+    --accent-gold: #fbbf24;
+    --accent-emerald: #10b981;
+    --accent-rose: #f43f5e;
+
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-inverted: #0f172a;
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --shadow-glow: 0 0 35px var(--royal-glow);
+    --shadow-modal: 0 25px 60px -15px rgba(0, 0, 0, 0.75), 0 0 40px var(--royal-glow);
+
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Temas Personalizáveis */
+[data-theme="purple"] {
+    --bg-base: #0b0717;
+    --bg-surface: #150e2a;
+    --bg-card: rgba(32, 20, 64, 0.75);
+    --bg-glass: rgba(53, 31, 107, 0.45);
+    --border-glass: rgba(192, 132, 252, 0.25);
+    --border-active: rgba(192, 132, 252, 0.65);
+    --royal-600: #9333ea;
+    --royal-500: #a855f7;
+    --royal-400: #c084fc;
+    --royal-glow: rgba(168, 85, 247, 0.45);
+}
+
+[data-theme="emerald"] {
+    --bg-base: #041410;
+    --bg-surface: #0a2620;
+    --bg-card: rgba(14, 48, 40, 0.75);
+    --bg-glass: rgba(16, 75, 62, 0.45);
+    --border-glass: rgba(52, 211, 153, 0.25);
+    --border-active: rgba(52, 211, 153, 0.65);
+    --royal-600: #059669;
+    --royal-500: #10b981;
+    --royal-400: #34d399;
+    --royal-glow: rgba(16, 185, 129, 0.45);
+}
+
+[data-theme="cyberpunk"] {
+    --bg-base: #0a0a14;
+    --bg-surface: #121226;
+    --bg-card: rgba(28, 28, 54, 0.8);
+    --bg-glass: rgba(43, 43, 84, 0.5);
+    --border-glass: rgba(244, 63, 94, 0.3);
+    --border-active: rgba(6, 182, 212, 0.8);
+    --royal-600: #06b6d4;
+    --royal-500: #0891b2;
+    --royal-400: #22d3ee;
+    --royal-glow: rgba(6, 182, 212, 0.5);
+}
+
+[data-theme="sunset"] {
+    --bg-base: #18090b;
+    --bg-surface: #2b1114;
+    --bg-card: rgba(56, 21, 26, 0.78);
+    --bg-glass: rgba(84, 30, 39, 0.5);
+    --border-glass: rgba(251, 146, 60, 0.3);
+    --border-active: rgba(251, 146, 60, 0.7);
+    --royal-600: #ea580c;
+    --royal-500: #f97316;
+    --royal-400: #fb923c;
+    --royal-glow: rgba(249, 115, 22, 0.45);
+}
+
+/* Reset Global */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-base);
+    background-image: 
+        radial-gradient(circle at 20% 15%, var(--royal-glow) 0%, transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(30, 58, 138, 0.3) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, rgba(15, 23, 42, 0.6) 0%, var(--bg-base) 100%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Header Superior de Navegação
+   ========================================================================== */
+
+.app-header {
+    background: rgba(10, 20, 48, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-glass);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.brand-logo-img {
+    height: 40px;
+    max-width: 170px;
+    width: auto;
+    object-fit: contain;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.35));
+    transition: var(--transition);
+}
+
+.brand:hover .brand-logo-img {
+    filter: drop-shadow(0 0 14px rgba(96, 165, 250, 0.7));
+    transform: scale(1.02);
+}
+
+.brand-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--royal-400);
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    margin-left: 0.2rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-header {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-header:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: var(--royal-400);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-header:active {
+    transform: translateY(0);
+}
+
+.btn-header.active {
+    background: var(--royal-600);
+    border-color: var(--royal-400);
+}
+
+/* ==========================================================================
+   Área Principal do App (Grid Roleta + Painel Lateral)
+   ========================================================================== */
+
+.app-main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+/* ==========================================================================
+   Coluna da Roleta (Esquerda/Centro)
+   ========================================================================== */
+
+.wheel-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 480px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    box-shadow: var(--shadow-subtle);
+    overflow: hidden;
+}
+
+/* Brilho decorativo no fundo da roleta */
+.wheel-section::before {
+    content: '';
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--royal-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: pulseGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(0.9); opacity: 0.45; }
+    100% { transform: scale(1.1); opacity: 0.85; }
+}
+
+.wheel-canvas-wrapper {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.wheel-canvas-wrapper:hover {
+    transform: scale(1.008);
+}
+
+.wheel-canvas-wrapper:active {
+    transform: scale(0.995);
+}
+
+#wheel-canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.4));
+}
+
+/* Dica flutuante de girar */
+.wheel-hint {
+    margin-top: 1.25rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 2;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.spin-cta-btn {
+    margin-top: 1rem;
+    z-index: 2;
+    background: linear-gradient(135deg, var(--royal-500), var(--royal-700));
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding: 0.85rem 3rem;
+    border-radius: var(--radius-full);
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    box-shadow: 0 8px 25px var(--royal-glow);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    transition: var(--transition);
+    letter-spacing: 0.02em;
+}
+
+.spin-cta-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.65);
+    border-color: #ffffff;
+}
+
+.spin-cta-btn:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+.spin-cta-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   Painel Lateral de Entradas e Resultados (Estilo Wheel of Names)
+   ========================================================================== */
+
+.sidebar-panel {
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-subtle);
+    overflow: hidden;
+    height: 100%;
+    min-height: 580px;
+}
+
+/* Abas: Entradas e Resultados */
+.sidebar-tabs {
+    display: flex;
+    background: rgba(6, 11, 25, 0.6);
+    border-bottom: 1px solid var(--border-glass);
+    padding: 0.4rem 0.5rem 0;
+    gap: 0.5rem;
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: var(--transition);
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    color: #ffffff;
+    border-bottom-color: var(--royal-400);
+}
+
+.tab-badge {
+    background: rgba(59, 130, 246, 0.25);
+    color: var(--royal-400);
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.tab-btn.active .tab-badge {
+    background: var(--royal-600);
+    color: #ffffff;
+}
+
+.tab-content {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    padding: 1.25rem;
+    overflow-y: auto;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* Barra de Ações Rápidas (Baralhar, Ordenar, Presets) */
+.toolbar-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-tool {
+    flex: 1;
+    min-width: 100px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: var(--transition);
+}
+
+.btn-tool:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: var(--royal-400);
+    transform: translateY(-1px);
+}
+
+.btn-tool.danger:hover {
+    background: rgba(244, 63, 94, 0.2);
+    border-color: var(--accent-rose);
+    color: #fda4af;
+}
+
+/* Lista Visual de Nomes (Apenas Visualização com botão X para apagar) */
+.entries-list-container {
+    position: relative;
+    flex: 1;
+    min-height: 220px;
+    max-height: 320px;
+    background: rgba(6, 11, 25, 0.75);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.entries-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 0.5rem;
+}
+
+.entries-list-counter {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--royal-400);
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+}
+
+.entries-items-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 0.25rem;
+}
+
+.entry-item-row {
+    background: rgba(15, 28, 63, 0.65);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    transition: var(--transition);
+    animation: fadeIn 0.2s ease;
+}
+
+.entry-item-row:hover {
+    background: rgba(30, 58, 138, 0.45);
+    border-color: var(--royal-400);
+    transform: translateX(2px);
+}
+
+.entry-item-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    overflow: hidden;
+    flex: 1;
+}
+
+.entry-item-index {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--royal-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.12rem 0.45rem;
+    border-radius: var(--radius-full);
+    min-width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.entry-item-text {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-remove-entry {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.btn-remove-entry:hover {
+    background: rgba(244, 63, 94, 0.25);
+    color: #f43f5e;
+    transform: scale(1.15);
+}
+
+.empty-entries-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: var(--text-muted);
+    text-align: center;
+    gap: 0.4rem;
+    padding: 1.5rem 0.5rem;
+}
+
+.empty-entries-msg svg {
+    width: 38px;
+    height: 38px;
+    opacity: 0.35;
+    stroke: var(--text-muted);
+}
+
+/* Campo Rápido de Adição */
+.quick-add-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.quick-add-input {
+    flex: 1;
+    background: rgba(6, 11, 25, 0.75);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 0.6rem 0.9rem;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.quick-add-input:focus {
+    border-color: var(--royal-400);
+}
+
+.quick-add-btn {
+    background: var(--royal-600);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.quick-add-btn:hover {
+    background: var(--royal-500);
+}
+
+/* Seção de Configurações da Roleta (Tempo e Regras) */
+.settings-box {
+    background: rgba(6, 11, 25, 0.55);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.setting-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.setting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.setting-value-badge {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--royal-400);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Range Slider com visual customizado */
+.custom-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-full);
+    outline: none;
+    cursor: pointer;
+}
+
+.custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--royal-400);
+    border: 2px solid #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--royal-glow);
+    transition: var(--transition);
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* Switch Toggle (Ligar/Desligar desabilitar vencedor) */
+.toggle-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 1rem;
+}
+
+.toggle-text {
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.toggle-subtext {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-top: 0.1rem;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: 0.25s;
+    border-radius: var(--radius-full);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.25s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--royal-500);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* ==========================================================================
+   Aba de Resultados (Histórico de Vencedores)
+   ========================================================================== */
+
+.results-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.result-item {
+    background: rgba(6, 11, 25, 0.7);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: fadeIn 0.3s ease;
+}
+
+.result-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.result-rank {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-gold), #d97706);
+    color: #78350f;
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.result-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.btn-restore-winner {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    color: var(--royal-400);
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-restore-winner:hover {
+    background: var(--royal-600);
+    color: #ffffff;
+}
+
+.empty-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    color: var(--text-muted);
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.empty-results svg {
+    width: 48px;
+    height: 48px;
+    opacity: 0.4;
+    stroke: var(--text-muted);
+}
+
+/* ==========================================================================
+   Modal do Vencedor (Pop-up igual a foto + Animação Campeão)
+   ========================================================================== */
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(3, 7, 18, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    padding: 1.5rem;
+}
+
+.modal-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.winner-modal {
+    background: #1e1e24;
+    width: 100%;
+    max-width: 580px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-modal);
+    transform: scale(0.85) translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.modal-backdrop.open .winner-modal {
+    transform: scale(1) translateY(0);
+}
+
+/* Banner de cabeçalho idêntico ao screenshot */
+.winner-modal-banner {
+    background: #a855f7; /* Roxo vibrante como na imagem de referência */
+    color: #ffffff;
+    padding: 1.25rem 1.75rem;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    letter-spacing: -0.01em;
+}
+
+.winner-modal-body {
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #1c1c22;
+    text-align: center;
+}
+
+.winner-trophy-glow {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    animation: bounceTrophy 1s ease infinite alternate;
+}
+
+@keyframes bounceTrophy {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-8px) scale(1.1); }
+}
+
+.winner-name-display {
+    font-family: var(--font-heading);
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    word-break: break-word;
+    line-height: 1.15;
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+    animation: winnerGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes winnerGlow {
+    0% { text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+    100% { text-shadow: 0 0 30px var(--royal-glow), 0 0 50px rgba(255, 255, 255, 0.8); }
+}
+
+.winner-modal-footer {
+    background: #141419;
+    padding: 1rem 1.75rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.btn-modal-close {
+    background: transparent;
+    border: none;
+    color: #e2e8f0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-modal-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-modal-remove {
+    background: #4f46e5;
+    color: #ffffff;
+    border: none;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+}
+
+.btn-modal-remove:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Modal de Customização / Configurações de Cores
+   ========================================================================== */
+
+.modal-content-settings {
+    background: var(--bg-surface);
+    width: 100%;
+    max-width: 520px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-modal);
+    overflow: hidden;
+}
+
+.settings-modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-glass);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-modal-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-icon-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.btn-icon-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.settings-modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.theme-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem;
+}
+
+.theme-card-option {
+    background: var(--bg-card);
+    border: 2px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.theme-card-option:hover {
+    border-color: var(--royal-400);
+    transform: translateY(-2px);
+}
+
+.theme-card-option.active {
+    border-color: var(--royal-400);
+    background: rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 15px var(--royal-glow);
+}
+
+.theme-color-preview {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.theme-card-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Canvas de Confetes Fullscreen
+   ========================================================================== */
+
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1500;
+}
+
+/* ==========================================================================
+   Animações Utilitárias
+   ========================================================================== */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spinIcon {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Responsividade: Tablets e Mobile
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+    .app-main {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 1.25rem;
+    }
+
+    .wheel-section {
+        min-height: 440px;
+        padding: 1.5rem 1rem;
+    }
+
+    .sidebar-panel {
+        min-height: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-header {
+        padding: 0.6rem 1rem;
+    }
+
+    .brand-title {
+        font-size: 1.15rem;
+    }
+
+    .brand-badge {
+        display: none;
+    }
+
+    .btn-header span {
+        display: none; /* Deixa apenas o ícone no mobile */
+    }
+
+    .btn-header {
+        padding: 0.5rem;
+    }
+
+    .wheel-section {
+        min-height: 360px;
+        padding: 1rem 0.5rem;
+    }
+
+    .spin-cta-btn {
+        font-size: 1.1rem;
+        padding: 0.75rem 2rem;
+    }
+
+    .winner-name-display {
+        font-size: 2.2rem;
+    }
+
+    .winner-modal-banner {
+        font-size: 1.15rem;
+        padding: 1rem 1.25rem;
+    }
+
+    .toolbar-actions {
+        flex-direction: row;
+    }
+
+    .btn-tool {
+        font-size: 0.75rem;
+        padding: 0.45rem 0.5rem;
+    }
+}

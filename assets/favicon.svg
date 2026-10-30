@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="50%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#wheelGrad)" stroke="#60a5fa" stroke-width="4"/>
+  <!-- Wheel Segments -->
+  <path d="M50 50 L50 4 A46 46 0 0 1 89 27 Z" fill="#38bdf8"/>
+  <path d="M50 50 L89 27 A46 46 0 0 1 89 73 Z" fill="#f59e0b"/>
+  <path d="M50 50 L89 73 A46 46 0 0 1 50 96 Z" fill="#10b981"/>
+  <path d="M50 50 L50 96 A46 46 0 0 1 11 73 Z" fill="#a855f7"/>
+  <path d="M50 50 L11 73 A46 46 0 0 1 11 27 Z" fill="#ec4899"/>
+  <path d="M50 50 L11 27 A46 46 0 0 1 50 4 Z" fill="#f97316"/>
+  <!-- Center Hub -->
+  <circle cx="50" cy="50" r="14" fill="#ffffff" stroke="#1e3a8a" stroke-width="3"/>
+  <polygon points="96,50 82,42 82,58" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+</svg>
