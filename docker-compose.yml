@@ -4,6 +4,9 @@ services:
     container_name: roletazapp
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8080:8080"
+    environment:
+      - PORT=8080
     volumes:
-      - .:/usr/share/nginx/html
+      - .:/app
+      - /app/node_modules

@@ -30,6 +30,10 @@
         </a>
 
         <div class="header-actions">
+            <button id="btn-live-session" class="btn-header btn-highlight" title="Abrir Sessão ao Vivo (PIN & QR Code)">
+                <span class="live-pulse-dot"></span>
+                <span id="live-session-btn-text">Sessão ao Vivo (PIN)</span>
+            </button>
             <button id="btn-theme-modal" class="btn-header" title="Personalizar Cores e Tema">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
@@ -66,6 +70,24 @@
             </button>
         </div>
     </header>
+
+    <!-- Faixa Superior de Sessão ao Vivo (Estilo Kahoot) -->
+    <div class="session-topbar" id="session-topbar" style="display: none;">
+        <div class="session-topbar-content">
+            <div class="session-join-instruction">
+                <span>Entre em <strong id="topbar-url">.../join</strong></span>
+                <span class="session-divider">•</span>
+                <span>PIN: <strong class="topbar-pin" id="topbar-pin">000 000</strong></span>
+            </div>
+            <div class="session-topbar-actions">
+                <span class="players-count-pill" id="topbar-players-pill">
+                    <span class="players-icon">👥</span>
+                    <strong id="topbar-players-count">0</strong> na sala
+                </span>
+                <button type="button" class="btn-topbar" id="btn-show-qr">Ver QR Code</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Área Principal do Jogo -->
     <main class="app-main">
@@ -347,6 +369,38 @@
                             <span class="theme-card-title">Esmeralda</span>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal da Sessão ao Vivo (QR Code e PIN) -->
+    <div class="modal-backdrop" id="session-modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-content-settings session-modal-card">
+            <header class="settings-modal-header">
+                <h3>
+                    <span class="live-pulse-dot"></span>
+                    Sessão ao Vivo (Estilo Kahoot)
+                </h3>
+                <button type="button" class="btn-icon-close" id="btn-close-session-modal">&times;</button>
+            </header>
+            <div class="session-modal-body">
+                <div class="session-pin-banner">
+                    <span class="pin-title-label">PIN DA SESSÃO</span>
+                    <div class="pin-huge-display" id="session-modal-pin">--- ---</div>
+                </div>
+
+                <div class="session-qr-box">
+                    <div id="session-qr-container" class="qr-image-wrapper">
+                        <!-- Imagem do QR Code inserida dinamicamente -->
+                    </div>
+                    <p class="qr-helper-text">Aponte a câmera do celular para entrar direto com seu nome e emoji</p>
+                    <div class="qr-direct-link" id="session-modal-link">Carregando endereço...</div>
+                </div>
+
+                <div class="session-modal-footer-info">
+                    <span class="session-players-badge" id="session-modal-players-count">0 participantes conectados</span>
+                    <button type="button" class="btn-tool" id="btn-copy-join-link">Copiar Link</button>
                 </div>
             </div>
         </div>

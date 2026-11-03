@@ -147,6 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             closeAllModals();
 
+            // Notifica participantes conectados na sessão ao vivo
+            notifyHostSpinStart();
+
             // Esconde configurações e lista durante o giro para foco total na roleta
             if (state.hidePanelOnSpin) {
                 const appMain = document.querySelector('.app-main');
@@ -172,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             if (winner) {
+                notifyHostSpinEnd(winner);
                 handleWinner(winner);
             }
         }
@@ -505,6 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal(winnerModalBackdrop);
         closeModal(themeModalBackdrop);
         closeModal(presetsModalBackdrop);
+        if (sessionModalBackdrop) closeModal(sessionModalBackdrop);
     }
 
     function restoreUIAfterSpin() {
@@ -663,6 +668,214 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // =========================================================================
+    // 8. Sessão ao Vivo (Multiplayer Estilo Kahoot com PIN e QR Code)
+    // =========================================================================
+    const btnLiveSession = document.getElementById('btn-live-session');
+    const liveSessionBtnText = document.getElementById('live-session-btn-text');
+    const sessionTopbar = document.getElementById('session-topbar');
+    const topbarUrl = document.getElementById('topbar-url');
+    const topbarPin = document.getElementById('topbar-pin');
+    const topbarPlayersCount = document.getElementById('topbar-players-count');
+    const btnShowQr = document.getElementById('btn-show-qr');
+    const sessionModalBackdrop = document.getElementById('session-modal-backdrop');
+    const btnCloseSessionModal = document.getElementById('btn-close-session-modal');
+    const sessionModalPin = document.getElementById('session-modal-pin');
+    const sessionQrContainer = document.getElementById('session-qr-container');
+    const sessionModalLink = document.getElementById('session-modal-link');
+    const sessionModalPlayersCount = document.getElementById('session-modal-players-count');
+    const btnCopyJoinLink = document.getElementById('btn-copy-join-link');
+
+    let hostWs = null;
+    let activeSessionPin = null;
+    let activeJoinUrl = '';
+    const connectedPlayers = new Map();
+
+    function connectHostWebSocket(onReady) {
+        if (hostWs && hostWs.readyState === WebSocket.OPEN) {
+            if (onReady) onReady();
+            return;
+        }
+
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}`;
+
+        try {
+            hostWs = new WebSocket(wsUrl);
+
+            hostWs.onopen = () => {
+                console.log('[Host WS] Conectado ao servidor multiplayer');
+                if (onReady) onReady();
+            };
+
+            hostWs.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleHostServerMessage(data);
+                } catch (e) {
+                    console.error('[Host WS] Erro ao parsear mensagem:', e);
+                }
+            };
+
+            hostWs.onclose = () => {
+                console.warn('[Host WS] Desconectado. Tentando reconectar...');
+                setTimeout(() => {
+                    if (activeSessionPin) {
+                        connectHostWebSocket();
+                    }
+                }, 3000);
+            };
+
+            hostWs.onerror = (err) => {
+                console.error('[Host WS] Erro de conexão:', err);
+            };
+        } catch (e) {
+            console.error('[Host WS] Falha ao iniciar WebSocket:', e);
+        }
+    }
+
+    function handleHostServerMessage(data) {
+        switch (data.type) {
+            case 'host:room_created': {
+                activeSessionPin = data.pin;
+                activeJoinUrl = data.joinUrl;
+
+                const formattedPin = data.pin.length === 6
+                    ? `${data.pin.slice(0, 3)} ${data.pin.slice(3)}`
+                    : data.pin;
+
+                if (sessionModalPin) sessionModalPin.textContent = formattedPin;
+                if (topbarPin) topbarPin.textContent = formattedPin;
+
+                // Formata URL simplificada para exibição
+                const cleanDisplayUrl = activeJoinUrl.replace(/^https?:\/\//i, '');
+                if (topbarUrl) topbarUrl.textContent = cleanDisplayUrl;
+                if (sessionModalLink) sessionModalLink.textContent = activeJoinUrl;
+
+                // Carrega QR Code gerado pelo backend
+                if (sessionQrContainer) {
+                    sessionQrContainer.innerHTML = `
+                        <img src="/api/qr?text=${encodeURIComponent(activeJoinUrl)}" alt="QR Code para entrar" class="qr-code-img" />
+                    `;
+                }
+
+                if (sessionTopbar) sessionTopbar.style.display = 'block';
+                if (liveSessionBtnText) liveSessionBtnText.textContent = `Sessão: ${formattedPin}`;
+                if (btnLiveSession) btnLiveSession.classList.add('session-active');
+
+                openModal(sessionModalBackdrop);
+                break;
+            }
+
+            case 'host:player_joined': {
+                const player = data.player;
+                if (player) {
+                    connectedPlayers.set(player.id, player);
+                    const displayName = `${player.emoji} ${player.name}`.trim();
+
+                    // Adiciona na lista da roleta se ainda não estiver
+                    if (!state.items.includes(displayName)) {
+                        state.items.push(displayName);
+                        syncUI();
+                    }
+
+                    if (window.soundManager) {
+                        window.soundManager.playClick();
+                    }
+                }
+
+                const count = data.totalPlayers || connectedPlayers.size;
+                updatePlayersCountDisplay(count);
+                break;
+            }
+
+            case 'host:player_left': {
+                if (data.playerId) {
+                    connectedPlayers.delete(data.playerId);
+                }
+                const count = data.totalPlayers !== undefined ? data.totalPlayers : connectedPlayers.size;
+                updatePlayersCountDisplay(count);
+                break;
+            }
+        }
+    }
+
+    function updatePlayersCountDisplay(count) {
+        if (topbarPlayersCount) topbarPlayersCount.textContent = count;
+        if (sessionModalPlayersCount) {
+            sessionModalPlayersCount.textContent = `${count} participante${count === 1 ? '' : 's'} conectado${count === 1 ? '' : 's'}`;
+        }
+    }
+
+    function notifyHostSpinStart() {
+        if (hostWs && hostWs.readyState === WebSocket.OPEN && activeSessionPin) {
+            hostWs.send(JSON.stringify({ type: 'host:spin_start' }));
+        }
+    }
+
+    function notifyHostSpinEnd(winner) {
+        if (hostWs && hostWs.readyState === WebSocket.OPEN && activeSessionPin && winner) {
+            hostWs.send(JSON.stringify({
+                type: 'host:spin_end',
+                winner: { name: winner.name }
+            }));
+        }
+    }
+
+    if (btnLiveSession) {
+        btnLiveSession.addEventListener('click', () => {
+            if (!activeSessionPin) {
+                connectHostWebSocket(() => {
+                    hostWs.send(JSON.stringify({
+                        type: 'host:create_room',
+                        clientOrigin: window.location.origin
+                    }));
+                });
+            } else {
+                openModal(sessionModalBackdrop);
+            }
+        });
+    }
+
+    if (btnShowQr) {
+        btnShowQr.addEventListener('click', () => {
+            openModal(sessionModalBackdrop);
+        });
+    }
+
+    if (btnCloseSessionModal) {
+        btnCloseSessionModal.addEventListener('click', () => {
+            closeModal(sessionModalBackdrop);
+        });
+    }
+
+    if (btnCopyJoinLink) {
+        btnCopyJoinLink.addEventListener('click', () => {
+            if (!activeJoinUrl) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(activeJoinUrl).then(() => {
+                    const originalText = btnCopyJoinLink.textContent;
+                    btnCopyJoinLink.textContent = 'Link Copiado! ✓';
+                    setTimeout(() => {
+                        btnCopyJoinLink.textContent = originalText;
+                    }, 2000);
+                }).catch(() => {
+                    prompt('Copie o link abaixo:', activeJoinUrl);
+                });
+            } else {
+                prompt('Copie o link abaixo:', activeJoinUrl);
+            }
+        });
+    }
+
+    if (sessionModalBackdrop) {
+        sessionModalBackdrop.addEventListener('click', (e) => {
+            if (e.target === sessionModalBackdrop) {
+                closeModal(sessionModalBackdrop);
+            }
+        });
+    }
 
     // Inicializa interface com dados carregados
     syncUI();

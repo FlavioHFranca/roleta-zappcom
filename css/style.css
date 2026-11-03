@@ -1097,6 +1097,218 @@ input:checked + .slider:before {
     }
 }
 
+/* ==========================================================================
+   Sessão ao Vivo (Estilo Kahoot - PIN & QR Code)
+   ========================================================================== */
+
+.live-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10b981;
+    display: inline-block;
+    box-shadow: 0 0 0 rgba(16, 185, 129, 0.6);
+    animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.btn-header.btn-highlight {
+    background: #1c2638;
+    border-color: #2563eb;
+    color: #60a5fa;
+}
+
+.btn-header.btn-highlight:hover {
+    background: #23324d;
+    color: #93c5fd;
+}
+
+/* Faixa Superior Kahoot */
+.session-topbar {
+    background: #181a1f;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.65rem 1.75rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.session-topbar-content {
+    max-width: 1540px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.session-join-instruction {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.session-join-instruction strong {
+    color: var(--text-primary);
+}
+
+.topbar-pin {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    color: #ffffff !important;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.08em;
+}
+
+.session-divider {
+    color: var(--text-muted);
+}
+
+.session-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.players-count-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.players-count-pill strong {
+    color: #ffffff;
+}
+
+.btn-topbar {
+    background: var(--royal-primary);
+    color: #ffffff;
+    border: none;
+    padding: 0.4rem 0.95rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-topbar:hover {
+    background: var(--royal-hover);
+}
+
+/* Modal da Sessão com QR Code */
+.session-modal-card {
+    max-width: 480px;
+}
+
+.session-modal-body {
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+}
+
+.session-pin-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.pin-title-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+}
+
+.pin-huge-display {
+    font-family: var(--font-heading);
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: #ffffff;
+}
+
+.session-qr-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.qr-image-wrapper {
+    width: 210px;
+    height: 210px;
+    background: #181a1f;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+}
+
+.qr-image-wrapper svg, .qr-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.qr-helper-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.qr-direct-link {
+    font-family: monospace;
+    font-size: 0.85rem;
+    background: #14161c;
+    border: 1px solid var(--border-subtle);
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-sm);
+    color: var(--royal-light);
+    word-break: break-all;
+    max-width: 100%;
+}
+
+.session-modal-footer-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.session-players-badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
 @media (max-width: 640px) {
     .app-header {
         padding: 0.6rem 1rem;

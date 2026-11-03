@@ -1,16 +1,17 @@
-FROM nginx:alpine
+FROM node:20-alpine
 
-# Remove arquivos padrao do nginx
-RUN rm -rf /usr/share/nginx/html/*
+WORKDIR /app
 
-# Copia os arquivos da aplicacao
-COPY . /usr/share/nginx/html
+# Instala dependências de produção
+COPY package*.json ./
+RUN npm install --omit=dev
 
-# Copia configuracao otimizada do Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copia código da aplicação
+COPY . .
 
-# Expoe porta 80 do container
-EXPOSE 80
+# Expõe a porta do servidor
+EXPOSE 8080
+ENV PORT=8080
 
-# Inicia o servidor
-CMD ["nginx", "-g", "daemon off;"]
+# Inicia o servidor HTTP + WebSocket
+CMD ["node", "server.js"]

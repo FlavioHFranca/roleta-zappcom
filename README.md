@@ -6,6 +6,11 @@ Aplicação web para sorteios personalizáveis de nomes, produtos e itens em tem
 
 ## Recursos
 
+- **Modo Sessão ao Vivo (Estilo Kahoot)**:
+  - Criação de salas interativas com código PIN de 6 dígitos e QR Code vetorial em tempo real.
+  - Tela mobile dedicada (`/join`) para os participantes entrarem direto pelo smartphone, escolhendo apelido e avatar em emoji.
+  - Sincronização em tempo real via WebSockets: o apresentador gira a roleta no telão e os celulares dos participantes acompanham os estados de espera, rotação e resultado.
+  - Celebração de vitória no celular do vencedor com compartilhamento instantâneo via WhatsApp e gerador integrado de cards para Instagram Stories (1080x1920).
 - **Roleta em Canvas 2D**: Renderização dinâmica com suporte a telas de alta densidade (HiDPI/Retina), ponteiro indicador com deflexão física e divisão proporcional de fatias.
 - **Foco em Apresentações**: Ocultação automática do painel lateral durante o giro da roleta para visão limpa dos participantes, com botão para alternar a exibição manualmente.
 - **Duração Configurável**: Ajuste do tempo de giro (1 a 20 segundos) com desaceleração progressiva (easing quadrático).
@@ -27,7 +32,7 @@ Aplicação web para sorteios personalizáveis de nomes, produtos e itens em tem
 
 ### Opção 1: Via Docker (Recomendado)
 
-O projeto possui configuração pronta com Docker Compose utilizando Nginx Alpine para servir os arquivos estáticos na porta 8080.
+O projeto possui configuração pronta com Docker Compose utilizando Node.js Alpine com suporte nativo a WebSockets e servidor HTTP na porta 8080.
 
 1. Inicie o container:
    ```bash
@@ -35,29 +40,22 @@ O projeto possui configuração pronta com Docker Compose utilizando Nginx Alpin
    ```
 
 2. Acesse a aplicação:
-   - No computador: `http://localhost:8080`
-   - Em dispositivos na mesma rede local: `http://<IP-DO-COMPUTADOR>:8080`
+   - Apresentador (Telão): `http://localhost:8080`
+   - Participantes (Mobile): `http://<IP-DO-COMPUTADOR>:8080/join`
 
 3. Para encerrar o serviço:
    ```bash
    docker compose down
    ```
 
-### Opção 2: Servidor HTTP Local
+### Opção 2: Servidor Node.js Local
 
-Caso não utilize Docker, execute com qualquer servidor estático:
+Caso prefira executar sem Docker:
 
-- **Python**:
-  ```bash
-  python -m http.server 8080
-  ```
-
-- **Node.js (npx)**:
-  ```bash
-  npx serve . -p 8080
-  ```
-
-- Ou abra diretamente o arquivo `index.html` em um navegador.
+```bash
+npm install
+node server.js
+```
 
 ---
 
@@ -66,18 +64,21 @@ Caso não utilize Docker, execute com qualquer servidor estático:
 ```
 roletazappcom/
 ├── css/
-│   └── style.css          # Estilos da interface e temas
+│   ├── style.css          # Estilos da interface principal do telão
+│   └── join.css           # Estilos mobile-first da tela de entrada dos participantes
 ├── js/
-│   ├── app.js             # Lógica de controle, eventos e persistência
+│   ├── app.js             # Lógica de controle do telão, roleta e WebSocket Host
+│   ├── join.js            # Lógica do participante, avatares, WebSocket e compartilhamento
 │   ├── audio.js           # Geração de áudio procedural (Web Audio API)
 │   ├── confetti.js        # Efeito de confetes no sorteio
 │   └── wheel.js           # Motor de cálculo e renderização da roleta
 ├── assets/                # Imagens, logotipos e favicons
 ├── docker-compose.yml     # Orquestração do container Docker
-├── Dockerfile             # Imagem base Nginx Alpine
-├── nginx.conf             # Configuração do servidor web
-├── iniciar.bat            # Script de inicialização rápida no Windows
-└── index.html             # Marcação principal da aplicação
+├── Dockerfile             # Imagem base Node.js Alpine
+├── package.json           # Dependências do backend WebSocket (ws, qrcode)
+├── server.js              # Servidor HTTP e WebSocket com gestão de salas e QR Code
+├── index.html             # Interface principal (Telão do Apresentador)
+└── join.html              # Interface mobile do participante (/join)
 ```
 
 ---
@@ -95,6 +96,7 @@ roletazappcom/
 
 - HTML5 (Canvas 2D, Semântica e Acessibilidade ARIA)
 - CSS3 (CSS Grid, Flexbox, Custom Properties)
-- JavaScript ES6+ (Vanilla / Sem dependências externas)
+- JavaScript ES6+ (Vanilla no frontend)
 - Web Audio API (Áudio sintetizado nativo)
-- Docker & Nginx Alpine
+- WebSockets (`ws`) para comunicação bidirecional em tempo real
+- Node.js & Docker (Ambiente em container com sincronização de salas)

@@ -1,0 +1,588 @@
+/* ==========================================================================
+   Roleta Zappcom - Interface Mobile do Participante (Estilo Kahoot.it)
+   ========================================================================== */
+
+:root {
+    --bg-base: #0f1115;
+    --bg-surface: #181a1f;
+    --bg-card: #21232b;
+    --bg-card-hover: #292c36;
+    
+    --border-subtle: #2d303a;
+    --border-focus: #2563eb;
+    
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    
+    --whatsapp: #25D366;
+    --whatsapp-hover: #1ebc59;
+    --instagram: #E1306C;
+    --instagram-hover: #c9265e;
+    
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    
+    --font-heading: 'Outfit', -apple-system, sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    overflow-x: hidden;
+}
+
+.join-app {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    min-height: 90vh;
+    justify-content: space-between;
+}
+
+/* Header */
+.join-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.25rem 1.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.brand-logo {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #f59e0b; /* Amarelo conectando */
+}
+
+.connection-status.online .status-dot {
+    background-color: #10b981; /* Verde online */
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.connection-status.offline .status-dot {
+    background-color: #ef4444; /* Vermelho offline */
+}
+
+/* Painéis de Visualização */
+.view-panel {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeIn 0.25s ease-out;
+}
+
+.view-panel.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cartão de Entrada */
+.entry-card, .lobby-card, .spinning-card, .winner-card, .other-winner-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.entry-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.entry-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.input-kahoot {
+    background: var(--bg-card);
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    font-size: 1.05rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-kahoot:focus {
+    border-color: var(--border-focus);
+    background: #14161c;
+}
+
+.pin-input {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    font-weight: 800;
+}
+
+/* Seletor de Emojis */
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.4rem;
+    background: var(--bg-card);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.emoji-btn {
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    font-size: 1.4rem;
+    line-height: 1;
+    padding: 0.4rem 0.2rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-btn:hover {
+    background: var(--bg-card-hover);
+}
+
+.emoji-btn.selected {
+    background: var(--bg-card-hover);
+    border-color: var(--primary);
+    transform: scale(1.15);
+}
+
+.alert-error {
+    background: #2b1517;
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+    font-weight: 500;
+}
+
+.btn-kahoot {
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    transition: all 0.2s ease;
+}
+
+.btn-kahoot:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+/* ETAPA 2: LOBBY */
+.lobby-card {
+    align-items: center;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+}
+
+.player-avatar-badge {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 3px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.25);
+}
+
+.player-name-display {
+    font-family: var(--font-heading);
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.room-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.lobby-status-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.pulse-indicator {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ping-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--primary);
+    opacity: 0.75;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.core-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--primary);
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+.lobby-main-msg {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.lobby-sub-msg {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ETAPA 3: GIRANDO */
+.spinning-card {
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+
+.wheel-spin-anim {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin-bottom: 1.75rem;
+}
+
+.spinner-svg {
+    width: 100%;
+    height: 100%;
+    animation: rotateSpinner 1.2s linear infinite;
+}
+
+.spinner-track {
+    fill: none;
+    stroke: var(--bg-card);
+    stroke-width: 8;
+}
+
+.spinner-bar {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 8;
+    stroke-dasharray: 260;
+    stroke-dashoffset: 170;
+    stroke-linecap: round;
+}
+
+.spin-emoji-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+}
+
+@keyframes rotateSpinner {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin-title {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.spin-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+/* ETAPA 4A: VOCÊ VENCEU! */
+.winner-card {
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.4rem;
+}
+
+.trophy-bounce {
+    font-size: 4rem;
+    animation: bounceTrophy 1.4s ease infinite;
+    margin-bottom: 0.5rem;
+}
+
+@keyframes bounceTrophy {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-16px); }
+    60% { transform: translateY(-8px); }
+}
+
+.winner-badge {
+    background: #f59e0b;
+    color: #000;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 0.25rem 0.8rem;
+    border-radius: 9999px;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.6rem;
+}
+
+.winner-name {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+}
+
+.winner-congrats {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.75rem;
+}
+
+/* Área de Compartilhamento */
+.share-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1rem;
+}
+
+.share-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.25rem;
+}
+
+.btn-share {
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all 0.2s ease;
+    color: #ffffff;
+}
+
+.btn-whatsapp {
+    background: var(--whatsapp);
+}
+
+.btn-whatsapp:hover, .btn-whatsapp:active {
+    background: var(--whatsapp-hover);
+}
+
+.btn-instagram {
+    background: var(--instagram);
+}
+
+.btn-instagram:hover, .btn-instagram:active {
+    background: var(--instagram-hover);
+}
+
+.btn-secondary {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover, .btn-secondary:active {
+    background: var(--bg-card-hover);
+}
+
+/* ETAPA 4B: OUTRO VENCEDOR */
+.other-winner-card {
+    align-items: center;
+    text-align: center;
+    padding: 2.5rem 1.4rem;
+}
+
+.round-ended-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.round-ended-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.winner-reveal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.winner-reveal-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.winner-reveal-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.winner-reveal-emoji {
+    font-size: 2rem;
+}
+
+.winner-reveal-name {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.keep-ready-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
