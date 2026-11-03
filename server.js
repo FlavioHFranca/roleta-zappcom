@@ -24,6 +24,9 @@ const MIME_TYPES = {
 
 // Detecção inteligente do IP local da máquina (para exibição no QR Code / mobile)
 function getLocalIp() {
+  if (process.env.HOST_IP) {
+    return process.env.HOST_IP;
+  }
   const interfaces = os.networkInterfaces();
   const candidates = [];
   
@@ -39,7 +42,7 @@ function getLocalIp() {
       }
     }
   }
-  return candidates[0] || 'localhost';
+  return candidates[0] || '192.168.0.8';
 }
 
 // Servidor HTTP
@@ -150,18 +153,34 @@ wss.on('connection', (ws) => {
           currentWinner: null
         });
 
-        // Determina a URL base para conexão dos celulares
-        let baseJoinUrl = `http://${getLocalIp()}:${PORT}`;
-        if (data.clientOrigin && !data.clientOrigin.includes('172.') && !data.clientOrigin.includes('10.0.2.')) {
-          baseJoinUrl = data.clientOrigin;
+        // Determina o host/IP da rota de conexão para os celulares
+        let resolvedHost = process.env.HOST_IP || '192.168.0.8';
+        if (data.customHost) {
+          resolvedHost = data.customHost;
+        } else if (data.clientOrigin && !data.clientOrigin.includes('localhost') && !data.clientOrigin.includes('127.0.0.1') && !data.clientOrigin.includes('172.')) {
+          try {
+            resolvedHost = new URL(data.clientOrigin).host;
+          } catch (e) {}
+        } else {
+          const detected = getLocalIp();
+          if (detected && !detected.startsWith('172.') && detected !== 'localhost') {
+            resolvedHost = detected;
+          }
         }
+
+        if (!resolvedHost.includes(':')) {
+          resolvedHost = `${resolvedHost}:${PORT}`;
+        }
+
+        const joinUrl = `http://${resolvedHost}/join?pin=${pin}`;
 
         ws.send(JSON.stringify({
           type: 'host:room_created',
           pin,
-          joinUrl: `${baseJoinUrl}/join?pin=${pin}`
+          hostAddress: resolvedHost,
+          joinUrl
         }));
-        console.log(`[SESSÃO] Nova sala criada com PIN: ${pin} | URL: ${baseJoinUrl}/join?pin=${pin}`);
+        console.log(`[SESSÃO] Nova sala criada com PIN: ${pin} | Rota: ${joinUrl}`);
       }
 
       else if (data.type === 'host:spin_start') {

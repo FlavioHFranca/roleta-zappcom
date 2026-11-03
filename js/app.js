@@ -678,6 +678,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const sessionTopbar = document.getElementById('session-topbar');
     const topbarUrl = document.getElementById('topbar-url');
     const topbarPin = document.getElementById('topbar-pin');
+    const sessionPinHero = document.getElementById('session-pin-hero');
+    const pinCopiedBadge = document.getElementById('pin-copied-badge');
+    const btnCopyTopbarUrl = document.getElementById('btn-copy-topbar-url');
     const topbarPlayersCount = document.getElementById('topbar-players-count');
     const btnShowQr = document.getElementById('btn-show-qr');
     const btnTopbarFullscreenQr = document.getElementById('btn-topbar-fullscreen-qr');
@@ -686,10 +689,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnHeaderFullscreenQr = document.getElementById('btn-header-fullscreen-qr');
     const btnModalOpenFullscreen = document.getElementById('btn-modal-open-fullscreen');
     const sessionModalPin = document.getElementById('session-modal-pin');
+    const btnCopyModalPin = document.getElementById('btn-copy-modal-pin');
     const sessionQrContainer = document.getElementById('session-qr-container');
     const sessionModalLink = document.getElementById('session-modal-link');
     const sessionModalPlayersCount = document.getElementById('session-modal-players-count');
     const btnCopyJoinLink = document.getElementById('btn-copy-join-link');
+    const inputCustomHost = document.getElementById('input-custom-host');
+    const btnApplyRoute = document.getElementById('btn-apply-route');
 
     // Elementos do QR Code em Tela Inteira (Modo Telão)
     const fullscreenQrOverlay = document.getElementById('fullscreen-qr-overlay');
@@ -706,6 +712,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeSessionPin = null;
     let activeJoinUrl = '';
     let pendingOpenFullscreen = false;
+    let currentHostAddress = localStorage.getItem('roletazapp_custom_host') || 
+        (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' 
+            ? window.location.host 
+            : '192.168.0.8:8080');
+
+    if (inputCustomHost) {
+        inputCustomHost.value = currentHostAddress;
+    }
+
     const connectedPlayers = new Map();
 
     function connectHostWebSocket(onReady) {
@@ -751,34 +766,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function updateQrCodeAndRouteDisplays() {
+        if (!activeSessionPin) return;
+
+        activeJoinUrl = `http://${currentHostAddress}/join?pin=${activeSessionPin}`;
+
+        const formattedPin = activeSessionPin.length === 6
+            ? `${activeSessionPin.slice(0, 3)} ${activeSessionPin.slice(3)}`
+            : activeSessionPin;
+
+        if (sessionModalPin) sessionModalPin.textContent = formattedPin;
+        if (topbarPin) topbarPin.textContent = formattedPin;
+        if (fullscreenPinNumber) fullscreenPinNumber.textContent = formattedPin;
+
+        if (topbarUrl) topbarUrl.textContent = activeJoinUrl;
+        if (sessionModalLink) sessionModalLink.textContent = activeJoinUrl;
+        if (fullscreenUrlText) fullscreenUrlText.textContent = activeJoinUrl;
+        if (inputCustomHost) inputCustomHost.value = currentHostAddress;
+
+        const qrSvgSrc = `/api/qr?text=${encodeURIComponent(activeJoinUrl)}`;
+        if (sessionQrContainer) {
+            sessionQrContainer.innerHTML = `<img src="${qrSvgSrc}" alt="QR Code da Sessão" class="qr-code-img" />`;
+        }
+        if (fullscreenQrContainer) {
+            fullscreenQrContainer.innerHTML = `<img src="${qrSvgSrc}" alt="QR Code Ampliado para o Telão" class="fullscreen-qr-img" />`;
+        }
+    }
+
     function handleHostServerMessage(data) {
         switch (data.type) {
             case 'host:room_created': {
                 activeSessionPin = data.pin;
-                activeJoinUrl = data.joinUrl;
+                if (data.hostAddress) {
+                    currentHostAddress = data.hostAddress;
+                    localStorage.setItem('roletazapp_custom_host', currentHostAddress);
+                }
+
+                updateQrCodeAndRouteDisplays();
 
                 const formattedPin = data.pin.length === 6
                     ? `${data.pin.slice(0, 3)} ${data.pin.slice(3)}`
                     : data.pin;
 
-                if (sessionModalPin) sessionModalPin.textContent = formattedPin;
-                if (topbarPin) topbarPin.textContent = formattedPin;
-
-                // Formata URL simplificada para exibição
-                const cleanDisplayUrl = activeJoinUrl.replace(/^https?:\/\//i, '');
-                if (topbarUrl) topbarUrl.textContent = cleanDisplayUrl;
-                if (sessionModalLink) sessionModalLink.textContent = activeJoinUrl;
-
-                // Carrega QR Code gerado pelo backend
-                const qrSvgSrc = `/api/qr?text=${encodeURIComponent(activeJoinUrl)}`;
-                if (sessionQrContainer) {
-                    sessionQrContainer.innerHTML = `
-                        <img src="${qrSvgSrc}" alt="QR Code para entrar" class="qr-code-img" />
-                    `;
-                }
-
                 if (sessionTopbar) sessionTopbar.style.display = 'block';
-                if (liveSessionBtnText) liveSessionBtnText.textContent = `Sessão: ${formattedPin}`;
+                if (liveSessionBtnText) liveSessionBtnText.textContent = `● AO VIVO • PIN: ${formattedPin}`;
                 if (btnLiveSession) btnLiveSession.classList.add('session-active');
 
                 if (pendingOpenFullscreen) {
@@ -866,6 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
             connectHostWebSocket(() => {
                 hostWs.send(JSON.stringify({
                     type: 'host:create_room',
+                    customHost: currentHostAddress,
                     clientOrigin: window.location.origin
                 }));
             });
@@ -876,19 +908,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal(sessionModalBackdrop);
         }
 
-        const formattedPin = activeSessionPin.length === 6
-            ? `${activeSessionPin.slice(0, 3)} ${activeSessionPin.slice(3)}`
-            : activeSessionPin;
-
-        if (fullscreenPinNumber) fullscreenPinNumber.textContent = formattedPin;
-        if (fullscreenUrlText) fullscreenUrlText.textContent = activeJoinUrl;
-
-        if (fullscreenQrContainer) {
-            fullscreenQrContainer.innerHTML = `
-                <img src="/api/qr?text=${encodeURIComponent(activeJoinUrl)}" alt="QR Code Ampliado para o Telão" class="fullscreen-qr-img" />
-            `;
-        }
-
+        updateQrCodeAndRouteDisplays();
         renderFullscreenPlayers();
 
         if (fullscreenQrOverlay) {
@@ -921,17 +941,97 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function copyPinToClipboard() {
+        if (!activeSessionPin) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(activeSessionPin).then(() => {
+                flashPinCopied();
+            }).catch(() => {
+                prompt('Código PIN da sala:', activeSessionPin);
+            });
+        } else {
+            prompt('Código PIN da sala:', activeSessionPin);
+        }
+    }
+
+    function flashPinCopied() {
+        if (pinCopiedBadge) {
+            pinCopiedBadge.classList.add('show');
+            setTimeout(() => pinCopiedBadge.classList.remove('show'), 2000);
+        }
+        if (btnCopyModalPin) {
+            const original = btnCopyModalPin.textContent;
+            btnCopyModalPin.textContent = 'PIN Copiado! ✓';
+            setTimeout(() => btnCopyModalPin.textContent = original, 2000);
+        }
+    }
+
+    function copyRouteUrl() {
+        if (!activeJoinUrl) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(activeJoinUrl).then(() => {
+                if (btnCopyTopbarUrl) {
+                    const original = btnCopyTopbarUrl.innerHTML;
+                    btnCopyTopbarUrl.innerHTML = '✓';
+                    setTimeout(() => btnCopyTopbarUrl.innerHTML = original, 2000);
+                }
+            }).catch(() => {
+                prompt('Rota de Conexão:', activeJoinUrl);
+            });
+        } else {
+            prompt('Rota de Conexão:', activeJoinUrl);
+        }
+    }
+
     if (btnLiveSession) {
         btnLiveSession.addEventListener('click', () => {
             if (!activeSessionPin) {
                 connectHostWebSocket(() => {
                     hostWs.send(JSON.stringify({
                         type: 'host:create_room',
+                        customHost: currentHostAddress,
                         clientOrigin: window.location.origin
                     }));
                 });
             } else {
                 openModal(sessionModalBackdrop);
+            }
+        });
+    }
+
+    if (sessionPinHero) {
+        sessionPinHero.addEventListener('click', copyPinToClipboard);
+    }
+
+    if (btnCopyModalPin) {
+        btnCopyModalPin.addEventListener('click', copyPinToClipboard);
+    }
+
+    if (btnCopyTopbarUrl) {
+        btnCopyTopbarUrl.addEventListener('click', copyRouteUrl);
+    }
+
+    if (btnApplyRoute && inputCustomHost) {
+        const applyRoute = () => {
+            let val = inputCustomHost.value.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+            if (!val) return;
+            if (!val.includes(':')) {
+                val = `${val}:8080`;
+            }
+            currentHostAddress = val;
+            localStorage.setItem('roletazapp_custom_host', currentHostAddress);
+            updateQrCodeAndRouteDisplays();
+            btnApplyRoute.textContent = 'Atualizada! ✓';
+            setTimeout(() => {
+                btnApplyRoute.textContent = 'Atualizar Rota';
+            }, 2000);
+        };
+
+        btnApplyRoute.addEventListener('click', applyRoute);
+        inputCustomHost.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyRoute();
             }
         });
     }

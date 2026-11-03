@@ -75,10 +75,23 @@
     <div class="session-topbar" id="session-topbar" style="display: none;">
         <div class="session-topbar-content">
             <div class="session-join-instruction">
-                <span>Entre em <strong id="topbar-url">.../join</strong></span>
-                <span class="session-divider">•</span>
-                <span>PIN: <strong class="topbar-pin" id="topbar-pin">000 000</strong></span>
+                <span class="route-tag">ROTA:</span>
+                <span class="route-link-text" id="topbar-url">http://192.168.0.8:8080/join</span>
+                <button type="button" class="btn-topbar-icon" id="btn-copy-topbar-url" title="Copiar Rota Completa">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
             </div>
+
+            <!-- PIN DE ACESSO EM DESTAQUE ABSOLUTO NO ADM -->
+            <div class="session-pin-hero" id="session-pin-hero" title="Clique para copiar o PIN da sala">
+                <span class="pin-hero-caption">PIN DA SALA</span>
+                <span class="topbar-pin" id="topbar-pin">000 000</span>
+                <span class="pin-copied-badge" id="pin-copied-badge">Copiado!</span>
+            </div>
+
             <div class="session-topbar-actions">
                 <span class="players-count-pill" id="topbar-players-pill">
                     <span class="players-icon">👥</span>
@@ -395,16 +408,38 @@
             </header>
             <div class="session-modal-body">
                 <div class="session-pin-banner">
-                    <span class="pin-title-label">PIN DA SESSÃO</span>
+                    <span class="pin-title-label">PIN DE ACESSO À SALA (DESTAQUE)</span>
                     <div class="pin-huge-display" id="session-modal-pin">--- ---</div>
+                    <button type="button" class="btn-copy-pin-pill" id="btn-copy-modal-pin" title="Copiar código PIN">
+                        <span>Copiar PIN</span>
+                    </button>
                 </div>
 
                 <div class="session-qr-box">
+                    <div class="qr-route-header">
+                        <span class="route-header-title">ROTA DE CONEXÃO DOS CELULARES</span>
+                    </div>
+
                     <div id="session-qr-container" class="qr-image-wrapper">
                         <!-- Imagem do QR Code inserida dinamicamente -->
                     </div>
+
                     <p class="qr-helper-text">Aponte a câmera do celular para entrar direto com seu nome e emoji</p>
-                    <div class="qr-direct-link" id="session-modal-link">Carregando endereço...</div>
+                    
+                    <div class="qr-route-box">
+                        <span class="qr-route-label">Link de acesso:</span>
+                        <div class="qr-direct-link" id="session-modal-link">Carregando endereço...</div>
+                    </div>
+
+                    <!-- Configurador de IP/Rota para rede local -->
+                    <div class="route-configurator">
+                        <div class="route-config-row">
+                            <label for="input-custom-host" class="route-config-label">IP / Host da Rota:</label>
+                            <input type="text" id="input-custom-host" class="input-route" value="192.168.0.8:8080" placeholder="Ex: 192.168.0.8:8080">
+                            <button type="button" class="btn-apply-route" id="btn-apply-route">Atualizar Rota</button>
+                        </div>
+                        <span class="route-tip-note">Se estiver em Wi-Fi, garanta que o IP acima é o da sua máquina na rede local.</span>
+                    </div>
                 </div>
 
                 <div class="session-modal-footer-info">
@@ -454,14 +489,15 @@
             <!-- Coluna Esquerda: QR Code Gigante -->
             <div class="fullscreen-qr-left">
                 <div class="fullscreen-qr-card">
+                    <span class="fullscreen-route-hero-label">ROTA DE CONEXÃO DIRETA:</span>
+                    <div class="fullscreen-url-pill" id="fullscreen-url-text">http://.../join</div>
                     <div id="fullscreen-qr-container" class="fullscreen-qr-img-wrapper">
                         <!-- QR Code SVG ampliado -->
                     </div>
                     <div class="fullscreen-qr-caption">
                         <span class="qr-camera-icon">📷</span>
-                        <span>Aponte a câmera do celular para entrar</span>
+                        <span>Aponte a câmera do celular para entrar direto</span>
                     </div>
-                    <div class="fullscreen-url-pill" id="fullscreen-url-text">http://.../join</div>
                 </div>
             </div>
 
