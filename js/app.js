@@ -510,6 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal(themeModalBackdrop);
         closeModal(presetsModalBackdrop);
         if (sessionModalBackdrop) closeModal(sessionModalBackdrop);
+        if (typeof closeFullscreenQrView === 'function') closeFullscreenQrView();
     }
 
     function restoreUIAfterSpin() {
@@ -679,17 +680,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const topbarPin = document.getElementById('topbar-pin');
     const topbarPlayersCount = document.getElementById('topbar-players-count');
     const btnShowQr = document.getElementById('btn-show-qr');
+    const btnTopbarFullscreenQr = document.getElementById('btn-topbar-fullscreen-qr');
     const sessionModalBackdrop = document.getElementById('session-modal-backdrop');
     const btnCloseSessionModal = document.getElementById('btn-close-session-modal');
+    const btnHeaderFullscreenQr = document.getElementById('btn-header-fullscreen-qr');
+    const btnModalOpenFullscreen = document.getElementById('btn-modal-open-fullscreen');
     const sessionModalPin = document.getElementById('session-modal-pin');
     const sessionQrContainer = document.getElementById('session-qr-container');
     const sessionModalLink = document.getElementById('session-modal-link');
     const sessionModalPlayersCount = document.getElementById('session-modal-players-count');
     const btnCopyJoinLink = document.getElementById('btn-copy-join-link');
 
+    // Elementos do QR Code em Tela Inteira (Modo Telão)
+    const fullscreenQrOverlay = document.getElementById('fullscreen-qr-overlay');
+    const btnCloseFullscreenQr = document.getElementById('btn-close-fullscreen-qr');
+    const btnToggleNativeFs = document.getElementById('btn-toggle-native-fs');
+    const btnStartFromQr = document.getElementById('btn-start-from-qr');
+    const fullscreenQrContainer = document.getElementById('fullscreen-qr-container');
+    const fullscreenUrlText = document.getElementById('fullscreen-url-text');
+    const fullscreenPinNumber = document.getElementById('fullscreen-pin-number');
+    const fullscreenPlayersCount = document.getElementById('fullscreen-players-count');
+    const fullscreenPlayersList = document.getElementById('fullscreen-players-list');
+
     let hostWs = null;
     let activeSessionPin = null;
     let activeJoinUrl = '';
+    let pendingOpenFullscreen = false;
     const connectedPlayers = new Map();
 
     function connectHostWebSocket(onReady) {
@@ -754,9 +770,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sessionModalLink) sessionModalLink.textContent = activeJoinUrl;
 
                 // Carrega QR Code gerado pelo backend
+                const qrSvgSrc = `/api/qr?text=${encodeURIComponent(activeJoinUrl)}`;
                 if (sessionQrContainer) {
                     sessionQrContainer.innerHTML = `
-                        <img src="/api/qr?text=${encodeURIComponent(activeJoinUrl)}" alt="QR Code para entrar" class="qr-code-img" />
+                        <img src="${qrSvgSrc}" alt="QR Code para entrar" class="qr-code-img" />
                     `;
                 }
 
@@ -764,7 +781,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (liveSessionBtnText) liveSessionBtnText.textContent = `Sessão: ${formattedPin}`;
                 if (btnLiveSession) btnLiveSession.classList.add('session-active');
 
-                openModal(sessionModalBackdrop);
+                if (pendingOpenFullscreen) {
+                    pendingOpenFullscreen = false;
+                    openFullscreenQrView();
+                } else {
+                    openModal(sessionModalBackdrop);
+                }
                 break;
             }
 
@@ -787,6 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const count = data.totalPlayers || connectedPlayers.size;
                 updatePlayersCountDisplay(count);
+                renderFullscreenPlayers();
                 break;
             }
 
@@ -796,6 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const count = data.totalPlayers !== undefined ? data.totalPlayers : connectedPlayers.size;
                 updatePlayersCountDisplay(count);
+                renderFullscreenPlayers();
                 break;
             }
         }
@@ -803,12 +827,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePlayersCountDisplay(count) {
         if (topbarPlayersCount) topbarPlayersCount.textContent = count;
+        if (fullscreenPlayersCount) fullscreenPlayersCount.textContent = count;
         if (sessionModalPlayersCount) {
             sessionModalPlayersCount.textContent = `${count} participante${count === 1 ? '' : 's'} conectado${count === 1 ? '' : 's'}`;
         }
     }
 
+    function renderFullscreenPlayers() {
+        if (!fullscreenPlayersList) return;
+
+        const count = connectedPlayers.size;
+        if (fullscreenPlayersCount) fullscreenPlayersCount.textContent = count;
+
+        if (count === 0) {
+            fullscreenPlayersList.innerHTML = `
+                <div class="fullscreen-waiting-msg" id="fullscreen-empty-players">
+                    Aguardando os participantes conectarem seus celulares...
+                </div>
+            `;
+            return;
+        }
+
+        fullscreenPlayersList.innerHTML = '';
+        connectedPlayers.forEach(p => {
+            const chip = document.createElement('div');
+            chip.className = 'fullscreen-player-chip';
+            chip.innerHTML = `
+                <span class="player-chip-emoji">${escapeHtml(p.emoji)}</span>
+                <span class="player-chip-name">${escapeHtml(p.name)}</span>
+            `;
+            fullscreenPlayersList.appendChild(chip);
+        });
+    }
+
+    function openFullscreenQrView() {
+        if (!activeSessionPin) {
+            pendingOpenFullscreen = true;
+            connectHostWebSocket(() => {
+                hostWs.send(JSON.stringify({
+                    type: 'host:create_room',
+                    clientOrigin: window.location.origin
+                }));
+            });
+            return;
+        }
+
+        if (sessionModalBackdrop) {
+            closeModal(sessionModalBackdrop);
+        }
+
+        const formattedPin = activeSessionPin.length === 6
+            ? `${activeSessionPin.slice(0, 3)} ${activeSessionPin.slice(3)}`
+            : activeSessionPin;
+
+        if (fullscreenPinNumber) fullscreenPinNumber.textContent = formattedPin;
+        if (fullscreenUrlText) fullscreenUrlText.textContent = activeJoinUrl;
+
+        if (fullscreenQrContainer) {
+            fullscreenQrContainer.innerHTML = `
+                <img src="/api/qr?text=${encodeURIComponent(activeJoinUrl)}" alt="QR Code Ampliado para o Telão" class="fullscreen-qr-img" />
+            `;
+        }
+
+        renderFullscreenPlayers();
+
+        if (fullscreenQrOverlay) {
+            fullscreenQrOverlay.style.display = 'flex';
+            fullscreenQrOverlay.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+    function closeFullscreenQrView() {
+        if (fullscreenQrOverlay) {
+            fullscreenQrOverlay.style.display = 'none';
+            fullscreenQrOverlay.setAttribute('aria-hidden', 'true');
+        }
+        setTimeout(() => wheel.resize(), 50);
+    }
+
     function notifyHostSpinStart() {
+        closeFullscreenQrView();
         if (hostWs && hostWs.readyState === WebSocket.OPEN && activeSessionPin) {
             hostWs.send(JSON.stringify({ type: 'host:spin_start' }));
         }
@@ -841,6 +939,50 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnShowQr) {
         btnShowQr.addEventListener('click', () => {
             openModal(sessionModalBackdrop);
+        });
+    }
+
+    if (btnTopbarFullscreenQr) {
+        btnTopbarFullscreenQr.addEventListener('click', () => {
+            openFullscreenQrView();
+        });
+    }
+
+    if (btnHeaderFullscreenQr) {
+        btnHeaderFullscreenQr.addEventListener('click', () => {
+            openFullscreenQrView();
+        });
+    }
+
+    if (btnModalOpenFullscreen) {
+        btnModalOpenFullscreen.addEventListener('click', () => {
+            openFullscreenQrView();
+        });
+    }
+
+    if (btnCloseFullscreenQr) {
+        btnCloseFullscreenQr.addEventListener('click', () => {
+            closeFullscreenQrView();
+        });
+    }
+
+    if (btnStartFromQr) {
+        btnStartFromQr.addEventListener('click', () => {
+            closeFullscreenQrView();
+            const wheelContainer = document.getElementById('wheel-container');
+            if (wheelContainer) {
+                wheelContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+
+    if (btnToggleNativeFs) {
+        btnToggleNativeFs.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
         });
     }
 

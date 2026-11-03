@@ -85,6 +85,7 @@
                     <strong id="topbar-players-count">0</strong> na sala
                 </span>
                 <button type="button" class="btn-topbar" id="btn-show-qr">Ver QR Code</button>
+                <button type="button" class="btn-topbar btn-topbar-highlight" id="btn-topbar-fullscreen-qr">⛶ QR Telão Inteiro</button>
             </div>
         </div>
     </div>
@@ -382,7 +383,15 @@
                     <span class="live-pulse-dot"></span>
                     Sessão ao Vivo (Estilo Kahoot)
                 </h3>
-                <button type="button" class="btn-icon-close" id="btn-close-session-modal">&times;</button>
+                <div class="modal-header-actions">
+                    <button type="button" class="btn-tool btn-sm" id="btn-header-fullscreen-qr" title="Mostrar QR Code na tela inteira">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                        </svg>
+                        <span>Telão Inteiro</span>
+                    </button>
+                    <button type="button" class="btn-icon-close" id="btn-close-session-modal">&times;</button>
+                </div>
             </header>
             <div class="session-modal-body">
                 <div class="session-pin-banner">
@@ -400,10 +409,98 @@
 
                 <div class="session-modal-footer-info">
                     <span class="session-players-badge" id="session-modal-players-count">0 participantes conectados</span>
-                    <button type="button" class="btn-tool" id="btn-copy-join-link">Copiar Link</button>
+                    <div class="session-modal-footer-btns">
+                        <button type="button" class="btn-tool" id="btn-copy-join-link">Copiar Link</button>
+                        <button type="button" class="btn-tool btn-highlight" id="btn-modal-open-fullscreen">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                            </svg>
+                            <span>QR Code na Tela Total</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Overlay do QR Code Total na Tela (Modo Telão / Kahoot Lobby) -->
+    <div class="fullscreen-qr-overlay" id="fullscreen-qr-overlay" style="display: none;" aria-hidden="true">
+        <header class="fullscreen-qr-header">
+            <div class="brand">
+                <img src="assets/logo-zappcom.png" alt="Zappcom" class="brand-logo" onerror="this.style.display='none'">
+                <span class="brand-title">Roleta Zappcom</span>
+                <span class="live-tag">
+                    <span class="live-pulse-dot"></span> AO VIVO
+                </span>
+            </div>
+            <div class="fullscreen-qr-top-actions">
+                <button type="button" class="btn-fullscreen-toggle" id="btn-toggle-native-fs" title="Alternar modo tela cheia do navegador">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                    </svg>
+                    <span>Tela Cheia (F11)</span>
+                </button>
+                <button type="button" class="btn-close-fullscreen-qr" id="btn-close-fullscreen-qr" title="Voltar para a Roleta">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span>Voltar à Roleta</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="fullscreen-qr-main">
+            <!-- Coluna Esquerda: QR Code Gigante -->
+            <div class="fullscreen-qr-left">
+                <div class="fullscreen-qr-card">
+                    <div id="fullscreen-qr-container" class="fullscreen-qr-img-wrapper">
+                        <!-- QR Code SVG ampliado -->
+                    </div>
+                    <div class="fullscreen-qr-caption">
+                        <span class="qr-camera-icon">📷</span>
+                        <span>Aponte a câmera do celular para entrar</span>
+                    </div>
+                    <div class="fullscreen-url-pill" id="fullscreen-url-text">http://.../join</div>
+                </div>
+            </div>
+
+            <!-- Coluna Direita: PIN e Lista de Participantes em Tempo Real -->
+            <div class="fullscreen-qr-right">
+                <div class="fullscreen-pin-banner">
+                    <span class="fullscreen-pin-label">CÓDIGO PIN DA SALA</span>
+                    <div class="fullscreen-pin-number" id="fullscreen-pin-number">000 000</div>
+                    <p class="fullscreen-pin-sub">Ou digite o link no celular e use o código acima</p>
+                </div>
+
+                <div class="fullscreen-lobby-box">
+                    <div class="fullscreen-lobby-header">
+                        <div class="fullscreen-lobby-title">
+                            <span class="players-icon">👥</span>
+                            <span>Participantes no Telão</span>
+                        </div>
+                        <span class="fullscreen-players-badge" id="fullscreen-players-count">0</span>
+                    </div>
+                    <div class="fullscreen-players-grid" id="fullscreen-players-list">
+                        <div class="fullscreen-waiting-msg" id="fullscreen-empty-players">
+                            Aguardando os participantes conectarem seus celulares...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="fullscreen-qr-footer">
+            <div class="fullscreen-footer-tip">
+                <span>💡 Os participantes aparecem automaticamente na tela e na roleta.</span>
+            </div>
+            <button type="button" class="btn-start-wheel-from-qr" id="btn-start-from-qr">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/>
+                </svg>
+                IR PARA A ROLETA E GIRAR
+            </button>
+        </footer>
     </div>
 
     <!-- Modal de Presets Rápidos -->

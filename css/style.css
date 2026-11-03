@@ -1309,6 +1309,380 @@ input:checked + .slider:before {
     color: var(--text-secondary);
 }
 
+.modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.session-modal-footer-btns {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-topbar-highlight {
+    background: #2563eb;
+    border: 1px solid #3b82f6;
+    color: #ffffff;
+}
+
+.btn-topbar-highlight:hover {
+    background: #1d4ed8;
+}
+
+/* ==========================================================================
+   Overlay do QR Code Total na Tela (Modo Telão / Kahoot Lobby)
+   ========================================================================== */
+.fullscreen-qr-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #090a0d;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #f4f4f5;
+    animation: fadeInOverlay 0.25s ease-out forwards;
+}
+
+@keyframes fadeInOverlay {
+    from { opacity: 0; transform: scale(0.99); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.fullscreen-qr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2.5rem;
+    background: #111318;
+    border-bottom: 1px solid #1f232b;
+}
+
+.fullscreen-qr-header .brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fullscreen-qr-header .brand-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+}
+
+.fullscreen-qr-header .live-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: #60a5fa;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.fullscreen-qr-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.btn-fullscreen-toggle,
+.btn-close-fullscreen-qr {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #181a20;
+    border: 1px solid #2d303a;
+    color: #d4d4d8;
+    padding: 0.65rem 1.15rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-fullscreen-toggle:hover {
+    background: #242731;
+    color: #ffffff;
+}
+
+.btn-close-fullscreen-qr {
+    background: #1e222b;
+    border-color: #3b4252;
+}
+
+.btn-close-fullscreen-qr:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+}
+
+.fullscreen-qr-main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 460px 1fr;
+    gap: 2.5rem;
+    padding: 2.5rem;
+    max-width: 1500px;
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.fullscreen-qr-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fullscreen-qr-card {
+    background: #12141a;
+    border: 1px solid #232732;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    width: 100%;
+}
+
+.fullscreen-qr-img-wrapper {
+    width: 320px;
+    height: 320px;
+    background: #ffffff;
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.fullscreen-qr-img-wrapper svg,
+.fullscreen-qr-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.fullscreen-qr-caption {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e4e4e7;
+}
+
+.fullscreen-url-pill {
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: #93c5fd;
+    background: #0d0f14;
+    border: 1px solid #262a36;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    margin-top: 0.75rem;
+    word-break: break-all;
+    text-align: center;
+}
+
+.fullscreen-qr-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    height: 100%;
+    justify-content: center;
+}
+
+.fullscreen-pin-banner {
+    background: #12141a;
+    border: 1px solid #232732;
+    border-radius: var(--radius-md);
+    padding: 1.5rem 2rem;
+    text-align: left;
+}
+
+.fullscreen-pin-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.fullscreen-pin-number {
+    font-family: var(--font-heading);
+    font-size: 4.5rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #ffffff;
+    line-height: 1.1;
+    margin: 0.25rem 0;
+}
+
+.fullscreen-pin-sub {
+    font-size: 0.95rem;
+    color: #71717a;
+    margin: 0;
+}
+
+.fullscreen-lobby-box {
+    background: #12141a;
+    border: 1px solid #232732;
+    border-radius: var(--radius-md);
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 240px;
+    max-height: 380px;
+}
+
+.fullscreen-lobby-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #1f232b;
+}
+
+.fullscreen-lobby-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f4f4f5;
+}
+
+.fullscreen-players-badge {
+    background: #2563eb;
+    color: #ffffff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.95rem;
+}
+
+.fullscreen-players-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    align-content: flex-start;
+    flex: 1;
+}
+
+.fullscreen-player-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #1a1e27;
+    border: 1px solid #2d3342;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    animation: popInChip 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popInChip {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.fullscreen-player-chip .player-chip-emoji {
+    font-size: 1.2rem;
+}
+
+.fullscreen-waiting-msg {
+    color: #52525b;
+    font-size: 1rem;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 120px;
+}
+
+.fullscreen-qr-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2.5rem;
+    background: #111318;
+    border-top: 1px solid #1f232b;
+}
+
+.fullscreen-footer-tip {
+    font-size: 0.9rem;
+    color: #a1a1aa;
+}
+
+.btn-start-wheel-from-qr {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 0.9rem 2.2rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+    transition: var(--transition);
+}
+
+.btn-start-wheel-from-qr:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+}
+
+@media (max-width: 900px) {
+    .fullscreen-qr-main {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .fullscreen-qr-img-wrapper {
+        width: 250px;
+        height: 250px;
+    }
+
+    .fullscreen-pin-number {
+        font-size: 3.2rem;
+    }
+
+    .fullscreen-qr-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
 @media (max-width: 640px) {
     .app-header {
         padding: 0.6rem 1rem;
