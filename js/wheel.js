@@ -98,9 +98,11 @@ class FortuneWheel {
 
     resize() {
         if (!this.canvas) return;
-        const rect = this.canvas.parentElement.getBoundingClientRect();
-        // Tamanho quadrado baseado no container
-        const size = Math.min(rect.width, rect.height || rect.width, 700);
+        const section = this.canvas.closest('.wheel-section');
+        const availWidth = section ? (section.clientWidth - 48) : (this.canvas.parentElement?.clientWidth || 550);
+        // Garante que a roleta caiba confortavelmente na tela vertical e horizontal
+        const availHeight = Math.max(340, window.innerHeight - 240);
+        const size = Math.max(280, Math.min(availWidth, availHeight, 680));
         const dpr = window.devicePixelRatio || 1;
 
         this.canvas.width = size * dpr;
@@ -275,14 +277,11 @@ class FortuneWheel {
         ctx.save();
         ctx.translate(this.centerX, this.centerY);
 
-        // Sombra suave externa da roleta
+        // Base limpa e sólida da roleta (sem sombras difusas artificiais)
         ctx.save();
         ctx.beginPath();
         ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = '#0f172a';
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-        ctx.shadowBlur = 24;
-        ctx.shadowOffsetY = 8;
+        ctx.fillStyle = '#18181b';
         ctx.fill();
         ctx.restore();
 
@@ -409,34 +408,23 @@ class FortuneWheel {
         ctx.save();
         ctx.translate(this.centerX, this.centerY);
 
-        // Sombra profunda do centro
+        // Anel externo sólido e limpo (sem degrade metálico artificial)
         ctx.beginPath();
-        ctx.arc(0, 0, hubRadius + 4, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+        ctx.arc(0, 0, hubRadius + 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#e2e8f0';
         ctx.fill();
 
-        // Anel metálico externo
-        const gradRing = ctx.createLinearGradient(-hubRadius, -hubRadius, hubRadius, hubRadius);
-        gradRing.addColorStop(0, '#e2e8f0');
-        gradRing.addColorStop(0.5, '#ffffff');
-        gradRing.addColorStop(1, '#94a3b8');
-
-        ctx.beginPath();
-        ctx.arc(0, 0, hubRadius + 2, 0, Math.PI * 2);
-        ctx.fillStyle = gradRing;
-        ctx.fill();
-
-        // Centro branco puro (igual foto da referência)
+        // Centro branco sólido e nítido
         ctx.beginPath();
         ctx.arc(0, 0, hubRadius, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
         ctx.fill();
 
-        // Detalhe sutil central ou ícone de giro
+        // Núcleo central minimalista
         ctx.beginPath();
-        ctx.arc(0, 0, hubRadius * 0.45, 0, Math.PI * 2);
-        ctx.fillStyle = '#f1f5f9';
-        ctx.strokeStyle = '#cbd5e1';
+        ctx.arc(0, 0, hubRadius * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = '#f8fafc';
+        ctx.strokeStyle = '#94a3b8';
         ctx.lineWidth = 1.5;
         ctx.fill();
         ctx.stroke();
@@ -451,46 +439,34 @@ class FortuneWheel {
         ctx.save();
         ctx.translate(this.centerX, this.centerY);
 
-        // A agulha fica na posição 0 rad (lado direito, exatamente como no screenshot da foto)
-        // Adicionamos a deflexão causada pelo atrito dos pinos
+        // Agulha no lado direito com rotação e deflexão
         ctx.rotate(this.pointerAngle + this.pointerDeflection);
 
-        // Ponteiro triangular estilizado (dourado/amarelo com gradiente e borda, idêntico à referência)
+        // Ponteiro triangular sólido e nítido (design limpo tradicional de sorteio)
         const tipX = pRadius - 14;      // Ponta entrando na roleta
         const backX = pRadius + 20;    // Base fora da roleta
-        const widthHalf = 15;
+        const widthHalf = 14;
 
-        // Sombra do ponteiro
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
-        ctx.shadowBlur = 8;
-        ctx.shadowOffsetX = -2;
-        ctx.shadowOffsetY = 3;
-
-        // Triângulo do ponteiro
+        // Triângulo do ponteiro (cor sólida vermelha de alta visibilidade, sem degrade)
         ctx.beginPath();
         ctx.moveTo(tipX, 0);
         ctx.lineTo(backX, -widthHalf);
         ctx.lineTo(backX, widthHalf);
         ctx.closePath();
 
-        const pGrad = ctx.createLinearGradient(tipX, 0, backX, 0);
-        pGrad.addColorStop(0, '#fde047'); // Dourado claro brilhante
-        pGrad.addColorStop(0.6, '#f59e0b'); // Âmbar
-        pGrad.addColorStop(1, '#d97706'); // Dourado escuro
-
-        ctx.fillStyle = pGrad;
+        ctx.fillStyle = '#dc2626';
         ctx.fill();
 
-        ctx.strokeStyle = '#78350f';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        // Pino central da base do ponteiro
+        // Pino da base
         ctx.beginPath();
         ctx.arc(backX - 4, 0, 5, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
         ctx.fill();
-        ctx.strokeStyle = '#92400e';
+        ctx.strokeStyle = '#7f1d1d';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 

@@ -1,152 +1,100 @@
-# 🎡 RoletaZapp - Roleta Personalizável de Nomes & Sorteios
+# Roleta Zappcom
 
-Uma aplicação web moderna, fluida e interativa de sorteio estilo *Wheel of Names*, projetada com paleta **Azul Royal**, efeitos visuais em **Glassmorphism**, animação física suave a 60 FPS, efeitos sonoros sintetizados via Web Audio API e celebração de campeão com confetes.
-
-Pronta para ser hospedada gratuitamente no **GitHub Pages** com zero configuração de build!
+Aplicação web para sorteios personalizáveis de nomes, produtos e itens em tempo real. Desenvolvida em JavaScript vanilla com renderização em HTML5 Canvas e efeitos de áudio sintetizados via Web Audio API, sem dependências externas.
 
 ---
 
-## ✨ Funcionalidades Principais
+## Recursos
 
-- 🎯 **Roleta Personalizável em Alta Definição (Canvas HiDPI)**:
-  - Baseada no visual clássico da referência, com agulha indicadora dourada reativa no lado direito.
-  - Desenho nítido em qualquer resolução (celular, tablet ou monitores 4K).
-  - Alinhamento inteligente dos textos das fatias para comportar de 2 a dezenas de itens.
-
-- ⚙️ **Controle de Tempo de Giro**:
-  - Ajuste personalizado do tempo de rotação (de 1 a 20 segundos) com controle deslizante em tempo real.
-  - Animação de desaceleração suave (*Quartic Out Easing*), proporcionando suspense autêntico de roleta real.
-
-- 🏆 **Pop-up do Vencedor & Celebração de Campeão**:
-  - Pop-up com cabeçalho vibrante e tipografia brilhante com o nome do sorteado.
-  - Animação festiva de confetes e estrelas em tela cheia renderizados via canvas.
-  - Fanfarra triunfante de vitória sintetizada por áudio.
-
-- 🚫 **Opção de Desabilitar / Remover Vencedor**:
-  - **Interruptor (Ligar/Desligar)**: Permite escolher se o vencedor é desabilitado/removido automaticamente da lista após o sorteio ou se permanece na roleta.
-  - Botão manual de **Remover** no próprio modal do vencedor.
-  - Registro de histórico na aba **Resultados** com botão para **Restaurar** qualquer nome de volta à roleta com 1 clique!
-
-- 📝 **Gerenciamento Completo de Entradas**:
-  - Adição rápida de itens por campo de texto.
-  - Editor em área de texto livre (um nome/produto por linha com sincronização em tempo real).
-  - Botão **🔀 Baralhar** (Shuffle com algoritmo Fisher-Yates).
-  - Botão **🔤 Ordenar** (Ordem alfabética A-Z).
-  - Botão **⚡ Exemplos** (Listas prontas: Nomes, Números 1 a 10, Prêmios e Brindes, Sim/Não, Dias da Semana).
-  - Botão **🗑️ Limpar**.
-
-- 🎨 **Personalização de Cores e Temas**:
-  - Tonalidade padrão: **Azul Royal** com efeitos de profundidade e glassmorphism.
-  - Seletor de temas de interface: *Azul Royal*, *Roxo Galáctico*, *Esmeralda*, *Cyberpunk* e *Pôr do Sol*.
-  - Paletas de cores para as fatias da roleta: *Original (Foto)*, *Azul Royal*, *Vibrante*, *Sunset* e *Esmeralda*.
-
-- 🔊 **Efeitos Sonoros Nativos (Web Audio API)**:
-  - Estalo/tick mecânico a cada pino que passa pela agulha, desacelerando fielmente com a rotação.
-  - Fanfarra triunfante na vitória.
-  - Botão de mutar/desmutar som no cabeçalho.
-  - Funciona totalmente offline, sem risco de falha no carregamento de arquivos de áudio externos.
-
-- 📱 **Totalmente Responsivo**:
-  - Otimizado para Smartphones, Tablets e Desktops.
-  - Suporte a modo **Tela Cheia** para apresentações, lives e eventos.
-  - Atalhos de teclado: Barra de espaço para girar, `ESC` para fechar modais.
-  - Persistência automática no `localStorage` (seus nomes e preferências continuam salvos ao recarregar a página).
+- **Roleta em Canvas 2D**: Renderização dinâmica com suporte a telas de alta densidade (HiDPI/Retina), ponteiro indicador com deflexão física e divisão proporcional de fatias.
+- **Foco em Apresentações**: Ocultação automática do painel lateral durante o giro da roleta para visão limpa dos participantes, com botão para alternar a exibição manualmente.
+- **Duração Configurável**: Ajuste do tempo de giro (1 a 20 segundos) com desaceleração progressiva (easing quadrático).
+- **Gerenciamento de Entradas**:
+  - Adição unitária ou múltipla (separada por vírgula ou quebra de linha).
+  - Embaralhamento aleatório (algoritmo Fisher-Yates).
+  - Ordenação alfabética (A-Z).
+  - Listas pré-definidas para testes rápidos.
+- **Controle de Vencedores**:
+  - Opção para desabilitar automaticamente o item sorteado após o resultado.
+  - Histórico de resultados na aba dedicada, com opção de restauração para a roleta com um clique.
+- **Áudio Sintetizado**: Feedback sonoro nativo via Web Audio API (som mecânico de rotação e sinal de vitória), sem necessidade de carregar arquivos externos.
+- **Persistência Local**: Estado das entradas, resultados e preferências salvas automaticamente no `localStorage`.
+- **Modo Tela Cheia e Atalhos**: Suporte ao modo tela cheia para projeções e atalhos de teclado (Barra de espaço para girar, `Esc` para fechar modais).
 
 ---
 
-## 🚀 Como Hospedar no GitHub Pages (Passo a Passo)
+## Execução
 
-Como o projeto é construído em HTML5, CSS3 e JavaScript puro, não é necessário instalar Node.js ou rodar comandos de compilação. Para colocá-lo no ar pelo GitHub:
+### Opção 1: Via Docker (Recomendado)
 
-1. **Crie um repositório no seu GitHub**:
-   - Acesse [github.com/new](https://github.com/new).
-   - Dê um nome ao repositório (exemplo: `roleta-sorteios` ou `roletazapp`).
-   - Deixe como **Público** (*Public*).
+O projeto possui configuração pronta com Docker Compose utilizando Nginx Alpine para servir os arquivos estáticos na porta 8080.
 
-2. **Envie os arquivos para o repositório**:
+1. Inicie o container:
    ```bash
-   git init
-   git add .
-   git commit -m "feat: RoletaZapp roleta personalizável"
-   git branch -M main
-   git remote add origin https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git
-   git push -u origin main
+   docker compose up -d --build
    ```
 
-3. **Ative o GitHub Pages**:
-   - No seu repositório no GitHub, clique na aba **Settings** (Configurações).
-   - No menu lateral esquerdo, clique em **Pages**.
-   - Na seção **Build and deployment** > **Branch**:
-     - Selecione a branch `main`.
-     - Selecione a pasta `/ (root)`.
-     - Clique em **Save**.
-   - Pronto! Em 1 minuto o GitHub fornecerá o link público (exemplo: `https://seu-usuario.github.io/roleta-sorteios/`).
+2. Acesse a aplicação:
+   - No computador: `http://localhost:8080`
+   - Em dispositivos na mesma rede local: `http://<IP-DO-COMPUTADOR>:8080`
+
+3. Para encerrar o serviço:
+   ```bash
+   docker compose down
+   ```
+
+### Opção 2: Servidor HTTP Local
+
+Caso não utilize Docker, execute com qualquer servidor estático:
+
+- **Python**:
+  ```bash
+  python -m http.server 8080
+  ```
+
+- **Node.js (npx)**:
+  ```bash
+  npx serve . -p 8080
+  ```
+
+- Ou abra diretamente o arquivo `index.html` em um navegador.
 
 ---
 
-## 🐳 Como Executar com Docker (Acesso Mobile & Tablet)
-
-O projeto inclui configuração pronta em **Docker** com servidor **Nginx Alpine** de alta performance, compressão gzip e cache otimizado para celulares e tablets na mesma rede Wi-Fi.
-
-### 1. Iniciar o Container
-Certifique-se de que o **Docker Desktop** esteja aberto e execute no terminal:
-```bash
-docker compose up -d --build
-```
-
-### 2. Acessar no Computador:
-- Abra no navegador: `http://localhost:8080`
-
-### 3. Acessar pelo Celular ou Tablet (Mesma rede Wi-Fi):
-- Conecte o smartphone ou tablet na mesma rede Wi-Fi do computador.
-- Abra o navegador do celular e digite o IP local da sua máquina:
-  **`http://192.168.40.180:8080`**
-
-### 4. Parar o Container:
-```bash
-docker compose down
-```
-
----
-
-## 💻 Como Executar Localmente (Sem Docker)
-
-Para testar na sua própria máquina:
-
-1. Basta abrir o arquivo `index.html` em qualquer navegador moderno (Chrome, Edge, Firefox, Safari).
-2. Ou use um servidor local simples:
-   - Com Python:
-     ```bash
-     python -m http.server 8080
-     ```
-     Depois acesse `http://localhost:8080` no computador ou `http://192.168.40.180:8080` no celular.
-   - Ou através da extensão **Live Server** do VS Code.
-
----
-
-## 📂 Estrutura de Arquivos
+## Estrutura do Projeto
 
 ```
 roletazappcom/
-│
-├── index.html          # Estrutura semântica, acessibilidade e modais
 ├── css/
-│   └── style.css       # Design System, Glassmorphism, Azul Royal e Responsividade
+│   └── style.css          # Estilos da interface e temas
 ├── js/
-│   ├── audio.js        # Sintetizador procedural de som (Web Audio API)
-│   ├── confetti.js     # Sistema de partículas e confetes a 60 FPS
-│   ├── wheel.js        # Motor físico da roleta e renderização Canvas HiDPI
-│   └── app.js          # Controle de estado, entradas, modais e localStorage
-├── assets/
-│   └── favicon.svg     # Ícone em vetor da aplicação
-└── README.md           # Documentação completa
+│   ├── app.js             # Lógica de controle, eventos e persistência
+│   ├── audio.js           # Geração de áudio procedural (Web Audio API)
+│   ├── confetti.js        # Efeito de confetes no sorteio
+│   └── wheel.js           # Motor de cálculo e renderização da roleta
+├── assets/                # Imagens, logotipos e favicons
+├── docker-compose.yml     # Orquestração do container Docker
+├── Dockerfile             # Imagem base Nginx Alpine
+├── nginx.conf             # Configuração do servidor web
+├── iniciar.bat            # Script de inicialização rápida no Windows
+└── index.html             # Marcação principal da aplicação
 ```
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Atalhos de Teclado
 
-- **HTML5**: Semântica, Canvas 2D e Acessibilidade (ARIA).
-- **CSS3 Puro**: Design System com CSS Custom Properties, Glassmorphism (`backdrop-filter`), Flexbox, CSS Grid e Animações Fluidas.
-- **JavaScript (ES6+)**: Física de desaceleração suave, algoritmos de embaralhamento e ordenação.
-- **Web Audio API**: Geração de som sintético procedural sem latência e sem dependências externas.
+| Tecla | Ação |
+|---|---|
+| `Espaço` | Gira a roleta (quando o cursor não estiver em campos de texto) |
+| `Esc` | Fecha modais abertos |
+
+---
+
+## Tecnologias
+
+- HTML5 (Canvas 2D, Semântica e Acessibilidade ARIA)
+- CSS3 (CSS Grid, Flexbox, Custom Properties)
+- JavaScript ES6+ (Vanilla / Sem dependências externas)
+- Web Audio API (Áudio sintetizado nativo)
+- Docker & Nginx Alpine

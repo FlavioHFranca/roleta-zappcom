@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const durationSlider = document.getElementById('duration-slider');
     const durationValBadge = document.getElementById('duration-val-badge');
     const autoRemoveSwitch = document.getElementById('auto-remove-switch');
+    const hidePanelSwitch = document.getElementById('hide-panel-switch');
 
     const resultsListContainer = document.getElementById('results-list-container');
     const emptyResultsMsg = document.getElementById('empty-results-msg');
@@ -58,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const soundIconOff = document.getElementById('sound-icon-off');
     const soundText = document.getElementById('sound-text');
     const btnFullscreen = document.getElementById('btn-fullscreen');
+    const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+    const sidebarToggleText = document.getElementById('sidebar-toggle-text');
 
     // Estado da Aplicação
     let state = {
@@ -65,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         results: [],
         duration: 5,
         autoRemove: true,
+        hidePanelOnSpin: true,
+        sidebarHidden: false,
         theme: 'royal-blue',
         palette: 'wheelOfNames',
         currentWinner: null
@@ -95,6 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const savedAutoRemove = localStorage.getItem('roletazapp_autoremove');
             state.autoRemove = savedAutoRemove !== null ? JSON.parse(savedAutoRemove) : true;
 
+            const savedHidePanel = localStorage.getItem('roletazapp_hide_panel');
+            state.hidePanelOnSpin = savedHidePanel !== null ? JSON.parse(savedHidePanel) : true;
+
             const savedTheme = localStorage.getItem('roletazapp_theme');
             state.theme = savedTheme || 'royal-blue';
 
@@ -112,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('roletazapp_results', JSON.stringify(state.results));
             localStorage.setItem('roletazapp_duration', state.duration.toString());
             localStorage.setItem('roletazapp_autoremove', JSON.stringify(state.autoRemove));
+            localStorage.setItem('roletazapp_hide_panel', JSON.stringify(state.hidePanelOnSpin));
             localStorage.setItem('roletazapp_theme', state.theme);
             localStorage.setItem('roletazapp_palette', state.palette);
         } catch (e) {
@@ -137,6 +146,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 GIRANDO...
             `;
             closeAllModals();
+
+            // Esconde configurações e lista durante o giro para foco total na roleta
+            if (state.hidePanelOnSpin) {
+                const appMain = document.querySelector('.app-main');
+                if (appMain) {
+                    appMain.classList.add('spinning-mode');
+                    setTimeout(() => wheel.resize(), 50);
+                    setTimeout(() => wheel.resize(), 250);
+                }
+            }
         },
         onTick: (speedRatio) => {
             if (window.soundManager) {
@@ -172,6 +191,9 @@ document.addEventListener('DOMContentLoaded', () => {
         durationSlider.value = state.duration;
         durationValBadge.textContent = `${state.duration}s`;
         autoRemoveSwitch.checked = state.autoRemove;
+        if (hidePanelSwitch) {
+            hidePanelSwitch.checked = state.hidePanelOnSpin;
+        }
 
         // Sincroniza Roleta
         wheel.setDuration(state.duration);
@@ -423,6 +445,34 @@ document.addEventListener('DOMContentLoaded', () => {
         saveState();
     });
 
+    // Switch de Ocultar Painel ao Girar
+    if (hidePanelSwitch) {
+        hidePanelSwitch.addEventListener('change', (e) => {
+            state.hidePanelOnSpin = e.target.checked;
+            saveState();
+        });
+    }
+
+    // Botão de Toggle Manual do Painel Lateral no Header
+    if (btnToggleSidebar) {
+        btnToggleSidebar.addEventListener('click', () => {
+            const appMain = document.querySelector('.app-main');
+            if (!appMain) return;
+            state.sidebarHidden = !state.sidebarHidden;
+            if (state.sidebarHidden) {
+                appMain.classList.add('sidebar-hidden');
+                btnToggleSidebar.classList.add('active');
+                if (sidebarToggleText) sidebarToggleText.textContent = 'Ver Painel';
+            } else {
+                appMain.classList.remove('sidebar-hidden');
+                btnToggleSidebar.classList.remove('active');
+                if (sidebarToggleText) sidebarToggleText.textContent = 'Painel';
+            }
+            setTimeout(() => wheel.resize(), 50);
+            setTimeout(() => wheel.resize(), 200);
+        });
+    }
+
     // Navegação por Abas (Entradas / Resultados)
     tabEntriesBtn.addEventListener('click', () => {
         tabEntriesBtn.classList.add('active');
@@ -457,10 +507,24 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal(presetsModalBackdrop);
     }
 
+    function restoreUIAfterSpin() {
+        const appMain = document.querySelector('.app-main');
+        if (appMain && appMain.classList.contains('spinning-mode')) {
+            appMain.classList.remove('spinning-mode');
+            setTimeout(() => {
+                wheel.resize();
+            }, 50);
+            setTimeout(() => {
+                wheel.resize();
+            }, 250);
+        }
+    }
+
     // Modal Vencedor Ações
     btnModalClose.addEventListener('click', () => {
         closeModal(winnerModalBackdrop);
         if (window.confettiSystem) window.confettiSystem.stop();
+        restoreUIAfterSpin();
     });
 
     btnModalRemove.addEventListener('click', () => {
@@ -472,6 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             closeModal(winnerModalBackdrop);
             if (window.confettiSystem) window.confettiSystem.stop();
+            restoreUIAfterSpin();
         }, 300);
     });
 
@@ -540,8 +605,9 @@ document.addEventListener('DOMContentLoaded', () => {
         backdrop.addEventListener('click', (e) => {
             if (e.target === backdrop) {
                 closeModal(backdrop);
-                if (backdrop === winnerModalBackdrop && window.confettiSystem) {
-                    window.confettiSystem.stop();
+                if (backdrop === winnerModalBackdrop) {
+                    if (window.confettiSystem) window.confettiSystem.stop();
+                    restoreUIAfterSpin();
                 }
             }
         });
@@ -584,6 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             closeAllModals();
             if (window.confettiSystem) window.confettiSystem.stop();
+            restoreUIAfterSpin();
             return;
         }
 
